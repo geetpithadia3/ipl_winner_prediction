@@ -24,6 +24,41 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 #Reading data from CSV file
 matches=pd.read_csv("/content/drive/My Drive/Colab Notebooks/matches.csv")
+
+#To check the number of columns containing null values
+null_columns=matches.isnull().sum()
+print(null_columns[null_columns > 0])
+
+#imputing the values in column city based on venue
+conditions = [matches["venue"] == "Rajiv Gandhi International Stadium, Uppal",matches["venue"] == "Maharashtra Cricket Association Stadium",
+              matches["venue"] == "Saurashtra Cricket Association Stadium", matches["venue"] == "Holkar Cricket Stadium",
+              matches["venue"] == "M Chinnaswamy Stadium",matches["venue"] == "Wankhede Stadium",
+              matches["venue"] == "Eden Gardens",matches["venue"] == "Feroz Shah Kotla",
+              matches["venue"] == "Punjab Cricket Association IS Bindra Stadium, Mohali",matches["venue"] == "Green Park",
+              matches["venue"] == "Punjab Cricket Association Stadium, Mohali",matches["venue"] == "Dr DY Patil Sports Academy",
+              matches["venue"] == "Sawai Mansingh Stadium", matches["venue"] == "MA Chidambaram Stadium, Chepauk", 
+              matches["venue"] == "Newlands", matches["venue"] == "St George's Park" , 
+              matches["venue"] == "Kingsmead", matches["venue"] == "SuperSport Park",
+              matches["venue"] == "Buffalo Park", matches["venue"] == "New Wanderers Stadium",
+              matches["venue"] == "De Beers Diamond Oval", matches["venue"] == "OUTsurance Oval", 
+              matches["venue"] == "Brabourne Stadium",matches["venue"] == "Sardar Patel Stadium", 
+              matches["venue"] == "Barabati Stadium", matches["venue"] == "Vidarbha Cricket Association Stadium, Jamtha",
+              matches["venue"] == "Himachal Pradesh Cricket Association Stadium",matches["venue"] == "Nehru Stadium",
+              matches["venue"] == "Dr. Y.S. Rajasekhara Reddy ACA-VDCA Cricket Stadium",matches["venue"] == "Subrata Roy Sahara Stadium",
+              matches["venue"] == "Shaheed Veer Narayan Singh International Stadium",matches["venue"] == "JSCA International Stadium Complex",
+              matches["venue"] == "Sheikh Zayed Stadium",matches["venue"] == "Sharjah Cricket Stadium",
+              matches["venue"] == "Dubai International Cricket Stadium",matches["venue"] == "M. A. Chidambaram Stadium",
+              matches["venue"] == "Feroz Shah Kotla Ground",matches["venue"] == "M. Chinnaswamy Stadium",
+              matches["venue"] == "Rajiv Gandhi Intl. Cricket Stadium" ,matches["venue"] == "IS Bindra Stadium",matches["venue"] == "ACA-VDCA Stadium"]
+values = ['Hyderabad', 'Mumbai', 'Rajkot',"Indore","Bengaluru","Mumbai","Kolkata","Delhi","Mohali","Kanpur","Mohali","Pune","Jaipur","Chennai","Cape Town","Port Elizabeth","Durban",
+          "Centurion",'Eastern Cape','Johannesburg','Northern Cape','Bloemfontein','Mumbai','Ahmedabad','Cuttack','Jamtha','Dharamshala','Chennai','Visakhapatnam','Pune','Raipur','Ranchi',
+          'Abu Dhabi','Sharjah','Dubai','Chennai','Delhi','Bengaluru','Hyderabad','Mohali','Visakhapatnam']
+matches['city'] = np.where(matches['city'].isnull(),
+                              np.select(conditions, values),
+                              matches['city'])
+null_columns=matches.isnull().sum()
+print(null_columns[null_columns > 0])
+
 #Removing records having null values in "winner" column
 matches=matches[matches["winner"].notna()]
 matches
@@ -120,8 +155,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.2, ra
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
-
-
 
 #Logistic Regression
 logreg = LogisticRegression()
